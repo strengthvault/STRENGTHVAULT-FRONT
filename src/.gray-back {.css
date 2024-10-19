@@ -1,0 +1,50 @@
+.gray-back {
+  background: linear-gradient(to bottom, #000000, #4b4f54, #ffffff, #ffffff, #ffffff);
+  background-size: 400% 400%;
+  animation: gradientAnimation 8s ease infinite;
+  position: relative; /* Asegura que los elementos hijos se posicionen correctamente */
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
+.gray-back p {
+  color: black;
+  animation: textColorAnimation 8s ease infinite;
+  position: relative;
+  z-index: 1; /* Asegura que el texto esté por encima del fondo */
+}
+
+.gray-back h2 {
+  color: black;
+  animation: textColorAnimation 8s ease infinite;
+  position: relative;
+  z-index: 1; /* Asegura que el texto esté por encima del fondo */
+}
+
+@keyframes textColorAnimation {
+  0% {
+    color: white;
+  }
+  25% {
+    color: black; /* Gris oscuro */
+  }
+  50% {
+    color: black;
+  }
+  75% {
+    color: black; /* Gris oscuro */
+  }
+  100% {
+    color: white;
+  }
+}
