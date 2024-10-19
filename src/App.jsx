@@ -248,7 +248,7 @@ const App = () => {
           </li>)}
 
           
-              {isAutenticated && (
+              {isAutenticated && isAdmin() && (
                 <li className="list-group-item bg-transparent p-1">
                 <>
                   <Link className={`py-2 nav-link text-light  `} to={`/panel`} onClick={() => setMenuSidebar(false)}>
@@ -260,7 +260,7 @@ const App = () => {
             
 
             
-              {isAutenticated && (
+              {isAutenticated && isAdmin() && (
                 <li className="list-group-item bg-transparent p-1">
                 <>
                   <Link className={`py-2 nav-link text-light `} to={`/videos`} onClick={() => setMenuSidebar(false)}>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as authService from './../services/auth.services.js';
-
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -13,7 +13,7 @@ function RegisterPage({ onRegister }) {
   const [error, setError] = useState();
   const [showPassword, setShowPassword] = useState(false); // Estado para la contraseña
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para confirmar contraseña
-  
+  const navigate = useNavigate()
 
   function onSubmit(event) {
     event.preventDefault();
@@ -31,9 +31,10 @@ function RegisterPage({ onRegister }) {
     authService.register(username, email, password)
       .then(({ user, token }) => {
         onRegister(user, token);
+        navigate('/')
       })
       .catch(err => {
-        setError(err.message);
+        navigate('/')
       });
   }
 
