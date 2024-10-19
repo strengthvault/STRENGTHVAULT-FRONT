@@ -1,6 +1,6 @@
 async function getOEmbed(videoUrl) {
     try {
-        const response = await fetch(`http://localhost:3000/api/oembed`, {
+        const response = await fetch(`https://strengthvault-api.vercel.app/api/oembed`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ async function getOEmbed(videoUrl) {
 
 
 async function getVideos() {
-  return fetch('http://localhost:3000/api/blogs', {  // Cambia la URL por la correcta si es diferente
+  return fetch('https://strengthvault-api.vercel.app/api/blogs', {  // Cambia la URL por la correcta si es diferente
       method: 'GET',
       headers: {
           'Authorization': localStorage.getItem('token'),
@@ -43,7 +43,7 @@ async function getVideos() {
 
 //Busca una noticia por su ID
 async function findByVideoId(id) {
-    return fetch(`http://localhost:3000/api/blogs/${id}`, {
+    return fetch(`https://strengthvault-api.vercel.app/api/blogs/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ async function findByVideoId(id) {
 async function createVideo(blog) {
 
     try {
-        const response = await fetch(`http://localhost:3000/api/blogs/upload`, {
+        const response = await fetch(`https://strengthvault-api.vercel.app/api/blogs/upload`, {
             method: 'POST',
             headers: {
                 'auth-token': localStorage.getItem('token'),
@@ -92,7 +92,7 @@ async function createVideo(blog) {
 //Editar un día
 
 async function editVideo(id, blog) {
-    return fetch(`http://localhost:3000/api/blogs/${id}`, {
+    return fetch(`https://strengthvault-api.vercel.app/api/blogs/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ async function editVideo(id, blog) {
 
 //Eliminar un día por su ID
 async function deleteVideo(id) {
-    return fetch(`http://localhost:3000/api/blogs/${id}`, {
+    return fetch(`https://strengthvault-api.vercel.app/api/blogs/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
