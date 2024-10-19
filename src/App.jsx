@@ -84,10 +84,11 @@ const App = () => {
   }
 
   function onLogout() {
-    setIsAutenticated(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
     authService.logout();
+    setIsAutenticated(false);
+    //localStorage.removeItem('token');
+    localStorage.removeItem('role');
+
     setMenuSidebar(false);
     navigate('/');
   }
