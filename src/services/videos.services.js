@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 async function getOEmbed(videoUrl) {
     try {
         const response = await fetch(`http://localhost:3000/api/oembed`, {
@@ -41,6 +43,8 @@ async function getVideos() {
       })
 }
 
+
+
 //Busca una noticia por su ID
 async function findByVideoId(id) {
     return fetch(`https://strengthvault-api.vercel.app/api/blogs/${id}`, {
@@ -59,6 +63,20 @@ async function findByVideoId(id) {
             }
         })
 }
+
+const createBlogWithVideo = async (formData) => {
+    try {
+        const response = await axios.post('http://localhost:3000/api/blogs/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear el blog con video:', error);
+        throw error;
+    }
+};
 
 // Crea una noticia
 async function createVideo(blog) {
@@ -128,5 +146,6 @@ export default {
     findByVideoId,
     createVideo,
     editVideo,
-    deleteVideo
+    deleteVideo,
+    createBlogWithVideo
  }

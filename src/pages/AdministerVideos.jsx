@@ -31,6 +31,8 @@ const AdministerVideos = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
     const [confirmDelete, setConfirmDelete] = useState(null); // Para mostrar el dialog de confirmación
     const op = useRef(null);
+    const [videoFile, setVideoFile] = useState(null);
+
 
     const categorys = [
         { name: 'Powerlifting'},
@@ -60,7 +62,59 @@ const AdministerVideos = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, [status]);
 
-    videosServices.getOEmbed
+    const handleFormChange = (field, value) => {
+        switch (field) {
+            case 'nombre':
+                setNombre(value);
+                break;
+            case 'descripcion':
+                setDescripcion(value);
+                break;
+            case 'categoria':
+                setCategory(typeof value === 'string' ? value : value.name);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const handleFileChange = (e) => {
+        setVideoFile(e.target.files[0]);
+    };
+
+    const validateForm = () => {
+        if (!nombre || !descripcion || !category || !videoFile) {
+            toast.error('Todos los campos y el video son obligatorios');
+            return false;
+        }
+        return true;
+    };
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        const toastId = toast.loading('Creando...');
+
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('descripcion', descripcion);
+        formData.append('categoria', category);
+        formData.append('file', videoFile);
+
+        videosServices.createBlogWithVideo(formData)
+            .then(() => {
+                setStatus(!status);
+                toast.update(toastId, { render: '¡Blog creado con éxito!', type: 'success', isLoading: false, autoClose: 2000 });
+                setNombre('');
+                setDescripcion('');
+                setCategory(null);
+                setVideoFile(null);
+            })
+            .catch(() => {
+                toast.update(toastId, { render: 'Error al crear el blog', type: 'error', isLoading: false, autoClose: 2000 });
+            });
+    };
 
     const startEditing = (blog) => {
         setEditingBlog(blog._id);
@@ -95,10 +149,9 @@ const AdministerVideos = () => {
                         <IconButton className='border  aaa' onClick={() => saveChanges(blog)}>
                             <SaveIcon className='text-light' />
                         </IconButton>
-                        
                     </>
                 ) : (
-                    <IconButton className='border  aaa' onClick={() => startEditing(blog)} >
+                    <IconButton className='border  aaa' onClick={() => startEditing(blog)}>
                         <EditIcon className='text-light'/>
                     </IconButton>
                 )}
@@ -110,7 +163,7 @@ const AdministerVideos = () => {
                     </IconButton>
                     <OverlayPanel ref={op} >
                         <ReactPlayer
-                        className={'aaa'}
+                            className={'aaa'}
                             url={blog.url}
                             config={{
                                 youtube: {
@@ -120,15 +173,12 @@ const AdministerVideos = () => {
                         />
                     </OverlayPanel>
                 </>
-
             </div>}
             <div className='col-4'>
-
                 {editingBlog !== blog._id ? 
                 <IconButton className='border  aaa' onClick={() => setConfirmDelete(blog)}>
                     <DeleteIcon className='text-light' />
                 </IconButton> :
-                
                 <IconButton className='border  aaa' onClick={cancelEditing} >
                     <CancelIcon className='text-light' />
                 </IconButton>
@@ -165,75 +215,35 @@ const AdministerVideos = () => {
     };
 
 const renderTable = () => (
-    <div className='row justify-content-center'>
-        <div className='col-11'>
-            <table className="table background-tr text-center align-middle">
-                <thead className=''>
-                    <tr className=' '>
-                        <th className=' '>Nombre</th>
-                        <th className=' largoDesc'>Descripción</th>
-                        <th>Categoría</th>
-                        <th>Video</th>
-                        <th className='largoActions'>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {videosData.map(blog => (
-                        <tr key={blog._id}>
-                            <td>
-                                {editingBlog === blog._id ? (
-                                    <InputText 
-                                        value={blog.nombre} 
-                                        onChange={(e) => handleInputChange(blog._id, 'nombre', e.target.value)}
-                                    />
-                                ) : (
-                                    blog.nombre
-                                )}
-                            </td>
-                            <td>
-                                {editingBlog === blog._id ? (
-                                    <InputTextarea 
-                                        value={blog.descripcion} 
-                                        className='w-100' 
-                                        onChange={(e) => handleInputChange(blog._id, 'descripcion', e.target.value)}
-                                    />
-                                ) : (
-                                    <span className='cssformated'>{blog.descripcion}</span>
-                                )}
-                            </td>
-                            <td>
-                                {editingBlog === blog._id ? (
-                                    <Dropdown 
-                                        value={categorys.find(cat => cat.name === blog.categoria) || blog.categoria} 
-                                        options={categorys} 
-                                        optionLabel="name" 
-                                        onChange={(e) => handleCategoryChange(blog._id, e.value)} 
-                                        editable
-                                    />
-                                ) : (
-                                    blog.categoria
-                                )}
-                            </td>
-                            <td>
-                                {editingBlog === blog._id ? (
-                                    <InputText 
-                                        value={blog.url} 
-                                        onChange={(e) => handleInputChange(blog._id, 'url', e.target.value)}
-                                    />
-                                ) : (
-                                    <>
-                                    <VideoEmbed videoUrl={blog.url}/>
-                                    </>
-                                )}
-                            </td>
-                            <td>{renderActions(blog)}</td>
+        <div className='row justify-content-center'>
+            <div className='col-11'>
+                <table className="table background-tr text-center align-middle">
+                    <thead className=''>
+                        <tr className=' '>
+                            <th className=' '>Nombre</th>
+                            <th className=' largoDesc'>Descripción</th>
+                            <th>Categoría</th>
+                            <th>Video</th>
+                            <th className='largoActions'>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {videosData.map(blog => (
+                            <tr key={blog._id}>
+                                <td>{blog.nombre}</td>
+                                <td><span className='cssformated'>{blog.descripcion}</span></td>
+                                <td>{blog.categoria}</td>
+                                <td>
+                                    <VideoEmbed videoUrl={blog.url}/>
+                                </td>
+                                <td>{renderActions(blog)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-);
+    );
 
 const renderCards = () => (
     <div className="row">
@@ -310,163 +320,66 @@ const renderCards = () => (
         setCategory(e);
     }
 
-    const handleFormChange = (field, value) => {
-        switch (field) {
-            case 'nombre':
-                setNombre(value);
-                break;
-            case 'descripcion':
-                setDescripcion(value);
-                break;
-            case 'categoria':
-                // Si el valor es un objeto de categoría (selección) o un string (manual), lo manejamos apropiadamente
-                setCategory(typeof value === 'string' ? value : value.name);
-                break;
-            case 'url':
-                setUrl(value);
-                break;
-            default:
-                break;
-        }
-    };
     
-    const validateForm = () => {
-        if (!nombre || !descripcion || !category ) {
-            toast.error('Todos los campos son obligatorios');
-            return false;
-        }
-        return true;
-    };
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-        if (!validateForm()) return; // Si no pasa la validación, no hacemos submit
-    
-        const toastId = toast.loading('Creando...');
-        videosServices.createVideo({ nombre, descripcion, categoria: category, url })
-            .then(() => {
-                setStatus(status + 1);
-                toast.update(toastId, { render: '¡Listo!', type: 'success', isLoading: false, autoClose: 2000 });
-                // Limpiar los campos después de crear
-                setNombre('');
-                setDescripcion('');
-                setCategory(null);
-                setUrl('');
-            })
-            .catch(() => {
-                toast.update(toastId, { render: 'Error al crear', type: 'error', isLoading: false, autoClose: 2000 });
-            });
-    };
 
     return (
         <div className="container-fluid">
-        <div className='row justify-content-center '>
-
-            <div>
-                <VideoUploader />
-            </div>
-
-
-            <div className='ColorBackground'>
-                <h2 className='my-4 text-center text-light'>
-                    Agregá un blog
-                </h2>
-                <div className='row justify-content-center text-center'>
-                    <form className='col-10 col-lg-6' onSubmit={onSubmit}>
-                        <div className='row justify-content-between'>
-                            <div className='col-12 col-lg-7'>
-                                <label htmlFor='name' className='text-light text-center mb-1'>
-                                    Nombre 
-                                </label>
+            <div className='row justify-content-center '>
+                <div className='ColorBackground'>
+                    <h2 className='my-4 text-center text-light'>Agregá un blog con video</h2>
+                    <div className='row justify-content-center text-center'>
+                        <form className='col-10 col-lg-6' onSubmit={onSubmit}>
+                            <div className='row justify-content-between'>
+                                <div className='col-12 col-lg-7'>
+                                    <label htmlFor='name' className='text-light text-center mb-1'>Nombre</label>
+                                    <InputText
+                                        value={nombre}
+                                        onChange={(e) => handleFormChange('nombre', e.target.value)}
+                                        className="form-control"
+                                        placeholder="Nombre del blog"
+                                    />
+                                </div>
+                                <div className='col-12 col-lg-5 '>
+                                    <label htmlFor='categoria' className='text-light text-center d-block mb-1'>Categoría</label>
+                                    <Dropdown
+                                        value={category}
+                                        onChange={(e) => handleFormChange('categoria', e.value)}
+                                        options={categorys}
+                                        optionLabel="name"
+                                        placeholder="Selecciona una categoría"
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className='my-3'>
+                                <label htmlFor='descripcion' className='text-light text-center mb-1'>Descripción</label>
+                                <InputTextarea
+                                    value={descripcion}
+                                    onChange={(e) => handleFormChange('descripcion', e.target.value)}
+                                    rows={5}
+                                    className="form-control"
+                                    placeholder="Descripción del blog"
+                                />
+                            </div>
+                            <div className='my-3'>
+                                <label htmlFor='video' className='text-light text-center mb-1'>Subir Video</label>
                                 <input
-                                    type='text'
-                                    className='form-control altoInputName'
-                                    id='name'
-                                    name='name'
-                                    onChange={(e) => handleFormChange('nombre', e.target.value)}
-                                    value={nombre}
-                                    placeholder='Nombre'
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleFileChange}
+                                    className="form-control"
                                 />
                             </div>
-                            <div className='col-12 col-lg-5 '>
-                                <label htmlFor='categoria' className='text-light text-center d-block mb-1'>
-                                    Categoría 
-                                </label>
-
-                                <Dropdown 
-                                    value={category} 
-                                    onChange={(e) => handleFormChange('categoria', e.value)} 
-                                    options={categorys} 
-                                    optionLabel="name"
-                                    editable 
-                                    placeholder="Categoría" 
-                                    className="w-100" 
-                                />
-                            </div>
-                        </div>
-                        <div className='my-3'>
-                            <label htmlFor='descripcion' className='text-light text-center mb-1'>
-                                Descripción 
-                            </label>
-                            <InputTextarea 
-                                autoResize 
-                                value={descripcion} 
-                                onChange={(e) => handleFormChange('descripcion', e.target.value)} 
-                                rows={5} 
-                                className='w-100' 
-                            />
-                        </div>
-                        {/*<div className='my-3'>
-                            <label htmlFor='url' className='text-light text-center mb-1'>
-                                Video 
-                            </label>
-                            <input
-                                type='text'
-                                className='form-control h-100'
-                                id='url'
-                                name='url'
-                                onChange={(e) => handleFormChange('url', e.target.value)}
-                                value={url}
-                                placeholder='Video'
-                            />
-                        </div>*/}
-                        <button className='input-group-text btn btn-primary my-4'>Crear blog</button>
-                    </form>
+                            <button type="submit" className="btn btn-primary mt-4">Crear Blog</button>
+                        </form>
+                    </div>
                 </div>
+                <div className='ColorBackground-2'>
+                    <h2 className=" text-center text-light mt-4">Administrar Videos</h2>
+                    {isMobile && status ? renderCards() : status && renderTable()}
                 </div>
-            <div className='ColorBackground-2 '>
-
-                <h2 className=" text-center text-light mt-4">Administrar Videos</h2>
-                {isMobile && status ? renderCards() : status && renderTable()}
             </div>
-
-            <div className='ColorBackground py-5'>
-
-            </div>
-
-        </div>
-            {/* Popup de confirmación para eliminar */}
-            <Dialog visible={!!confirmDelete} onHide={() => setConfirmDelete(null)} header="Confirmación de eliminación" footer={
-                <>
-                    <button className="btn btn-danger" onClick={() => handleDelete(confirmDelete)}>Eliminar</button>
-                    <button className="btn btn-secondary" onClick={() => setConfirmDelete(null)}>Cancelar</button>
-                </>
-            }>
-                <p>¿Deseas eliminar el blog {confirmDelete?.nombre}?</p>
-            </Dialog>
-            <ToastContainer
-                position="bottom-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable
-                pauseOnHover={false}
-                theme="light"
-                transition: Bounce
-                />
+            <ToastContainer position="bottom-center" autoClose={2000} />
         </div>
     );
 };
