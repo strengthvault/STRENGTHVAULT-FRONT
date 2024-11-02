@@ -15,6 +15,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import VideoUploader from '../components/UploadVideoToVImeo';
+import VideoEmbed from '../components/videoEmbed.jsx';
 
 const AdministerVideos = () => {
     const [nombre, setNombre] = useState('');
@@ -45,6 +47,7 @@ const AdministerVideos = () => {
             try {
                 const data = await videosServices.getVideos();
                 setVideosData(data);
+                console.log(data)
 
             } catch (error) {
                 console.log(error)
@@ -56,6 +59,8 @@ const AdministerVideos = () => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [status]);
+
+    videosServices.getOEmbed
 
     const startEditing = (blog) => {
         setEditingBlog(blog._id);
@@ -217,20 +222,7 @@ const renderTable = () => (
                                     />
                                 ) : (
                                     <>
-                                    <IconButton className='border  aaa' onClick={(e) => op.current.toggle(e)}>
-                                        <YouTubeIcon className='text-light ' />
-                                    </IconButton>
-                                    <OverlayPanel ref={op}>
-                                        <ReactPlayer
-                                            className={'w-100'}
-                                            url={blog.url}
-                                            config={{
-                                                youtube: {
-                                                    playerVars: { showinfo: 1 }
-                                                }
-                                            }}
-                                        />
-                                    </OverlayPanel>
+                                    <VideoEmbed videoUrl={blog.url}/>
                                     </>
                                 )}
                             </td>
@@ -369,6 +361,12 @@ const renderCards = () => (
     return (
         <div className="container-fluid">
         <div className='row justify-content-center '>
+
+            <div>
+                <VideoUploader />
+            </div>
+
+
             <div className='ColorBackground'>
                 <h2 className='my-4 text-center text-light'>
                     Agregá un blog
