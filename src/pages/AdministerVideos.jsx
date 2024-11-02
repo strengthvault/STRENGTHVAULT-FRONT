@@ -214,7 +214,8 @@ const AdministerVideos = () => {
         handleInputChange(id, 'categoria', newCategory);
     };
 
-const renderTable = () => (
+
+    const renderTable = () => (
         <div className='row justify-content-center'>
             <div className='col-11'>
                 <table className="table background-tr text-center align-middle">

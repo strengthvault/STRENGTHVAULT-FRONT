@@ -66,7 +66,7 @@ async function findByVideoId(id) {
 
 const createBlogWithVideo = async (formData) => {
     try {
-        const response = await axios.post('http://localhost:3000/api/blogs/upload', formData, {
+        const response = await axios.post('https://strengthvault-api.vercel.app/api/blogs/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
