@@ -1,5 +1,5 @@
 async function login(username, password) {
-    return fetch('http://localhost:3000/api/login', {
+    return fetch('https://strengthvault-api.vercel.app/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ async function getAllUsers() {
 
 //Busca una noticia por su ID
 async function findUserById(id) {
-    return fetch(`http://localhost:3000/api/user/${id}`, {
+    return fetch(`https://strengthvault-api.vercel.app/api/user/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ async function findUserById(id) {
 
 export async function register(username, email, password ) {
     console.log(username, email, password)
-    return fetch('http://localhost:3000/api/users/register', {
+    return fetch('https://strengthvault-api.vercel.app/api/users/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -117,7 +117,7 @@ export async function register(username, email, password ) {
   }
 
   async function updateUser(userId, data) {
-    return fetch(`http://localhost:3000/api/users/${userId}/access`, {
+    return fetch(`https://strengthvault-api.vercel.app/api/users/${userId}/access`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
