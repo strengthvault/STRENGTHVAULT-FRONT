@@ -2,63 +2,31 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import videosServices from '../services/videos.services';
 
-
 import "primereact/resources/themes/lara-light-indigo/theme.css";     
 import "primereact/resources/primereact.min.css";
 import 'primeflex/primeflex.css';
 
-
 import ReactPlayer from 'react-player';
 
-
-
 const VideoMobile = () => {
-    const {id} = useParams()
+    const { id } = useParams();
     const [error, setError] = useState(null);
     const [activeBlog, setActiveBlog] = useState(null);
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         videosServices.findByVideoId(id)
             .then(async data => {
-                console.log(data)
-                           
-                setActiveBlog(data);
-
-                /*const oEmbedDataArray = await Promise.all(data.map(async (video) => {
-                    if (video.videoStatus === 'available') {
-                        const oEmbedHtml = await videosServices.getOEmbed(video.url);
-                        return {
-                            id: video.id,
-                            name: video.nombre,
-                            description: video.descripcion,
-                            category: video.categoria,
-                            html: oEmbedHtml,
-                            status: video.videoStatus
-                        };
-                    } else {
-                        return {
-                            id: video.id,
-                            name: video.nombre,
-                            description: video.descripcion,
-                            category: video.categoria,
-                            status: video.videoStatus
-                        };
-                    }
-                }));
-*/
-
-            
-           })
+                console.log(data);
+                setActiveBlog(data); // Configura el primer video disponible
+            })
             .catch(err => {
                 setError(err.message);
+                setLoading(false);
             });
     }, [id]);
 
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
 
     return (
         <div className="container-fluid ColorBackground text-light">
@@ -69,7 +37,6 @@ const VideoMobile = () => {
                     <p>Acá tendrás todo nuestro contenido, dividido por categorías, simplemente navegá hasta encontrar lo que necesites.</p>
                 </div>
 
-
                 {/* Sección derecha - Contenido del video */}
                 <div className="col-10 col-lg-6 text-center">
                     {activeBlog ? (
@@ -77,27 +44,36 @@ const VideoMobile = () => {
                             <h3>{activeBlog.nombre}</h3>
                             <p>{activeBlog.descripcion}</p>
                             <p><strong>Categoría:</strong> {activeBlog.categoria}</p>
-                            <div className='row justify-content-center'>
-                               
-                                    <ReactPlayer
-                                    url={activeBlog.url}
-                                    config={{
-                                        youtube: {
-                                        playerVars: { showinfo: 1 }
-                                        }
-                                    }}
-                                    className={'m-auto'}
-                                    />
 
-                                
+                            <div className='row justify-content-center'>
+                                <div className='col-12'>
+                                {activeBlog.url == '' ? 
+                                <p>El blog se está subiendo... Por favor, vuelva más tarde.</p> 
+                                : 
+                                <ReactPlayer
+                                    url={activeBlog.url} // Usando directamente la URL
+                                    className="w-100"
+                                    controls
+                                    muted={false}
+                                    playing={false}
+                                    config={{
+                                        vimeo: {
+                                            playerOptions: {
+                                                title: true,
+                                                byline: false,
+                                                portrait: false,
+                                                dnt: true,
+                                            },
+                                        },
+                                }}
+                                onError={(e) => console.error("Error en ReactPlayer:", e)}
+                            />}
+                                </div>
+
                             </div>
                             
-                            
-                            {/*activeBlog.status === 'available' ? (
-                                <div dangerouslySetInnerHTML={{ __html: activeBlog.html || activeBlog.error }} />
-                            ) : (
-                                <div><em>El video aún se está procesando...</em></div>
-                            )*/}
+      
+
                         </div>
                     ) : (
                         <div className="text-center">

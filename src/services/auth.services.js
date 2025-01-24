@@ -1,5 +1,5 @@
 async function login(username, password) {
-    return fetch('https://strengthvault-api.vercel.app/api/login', {
+    return fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -8,19 +8,13 @@ async function login(username, password) {
     })
     .then(response => {
         if (response.ok) {
-            return response.json();
+            return response.json(); // Devuelve el { user, token } si la respuesta es 200 OK
         } else {
-            // Captura el error si el servidor devuelve un error de estado
+            // Captura el error si el servidor devuelve un estado HTTP no OK
             return response.json().then(err => {
-                throw new Error(err.message || 'Error al iniciar sesión');
+                throw new Error(err.message || 'Error al iniciar sesión'); // Lanza el error para el catch
             });
         }
-    })
-    .catch(err => {
-        // Muestra el error capturado en la consola o en la interfaz
-        console.error('Error en la solicitud:', err.message);
-        // Aquí puedes devolver el error o hacer algo con él en la interfaz
-        return { error: err.message };
     });
 }
 
@@ -63,9 +57,30 @@ async function getAllUsers() {
         })
 }
 
+
+//Busca una noticia por su ID
+async function findUserById(id) {
+    return fetch(`http://localhost:3000/api/user/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'auth-token': localStorage.getItem('token')
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            }
+            else {
+                throw new Error('No se pudo obtener las rutinas')
+            }
+        })
+}
+
+
 export async function register(username, email, password ) {
     console.log(username, email, password)
-    return fetch('https://strengthvault-api.vercel.app/api/users/register', {
+    return fetch('http://localhost:3000/api/users/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -76,7 +91,9 @@ export async function register(username, email, password ) {
             if (response.ok) {
                 return response.json();
             } else {
-                throw Error('Error al registrarse. Por favor intente de nuevo.');
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.message || 'Error al registrar';
+                throw new Error(errorMessage);
             }
         });
   }
@@ -100,7 +117,7 @@ export async function register(username, email, password ) {
   }
 
   async function updateUser(userId, data) {
-    return fetch(`https://strengthvault-api.vercel.app/api/users/${userId}/access`, {
+    return fetch(`http://localhost:3000/api/users/${userId}/access`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -120,5 +137,6 @@ export {
     login,
     logout,
     getAllUsers,
-    updateUser
+    updateUser,
+    findUserById
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as authService from './../services/auth.services.js';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -11,13 +11,14 @@ function RegisterPage({ onRegister }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState();
-  const [showPassword, setShowPassword] = useState(false); // Estado para la contraseña
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para confirmar contraseña
-  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
-  function onSubmit(event) {
+  async function onSubmit(event) {
     event.preventDefault();
     
+    // 1) Validaciones previas en el frontend
     if (password.length < 8) {
       setError('La contraseña debe tener al menos 8 caracteres');
       return;
@@ -28,37 +29,36 @@ function RegisterPage({ onRegister }) {
       return;
     }
 
-    authService.register(username, email, password)
-      .then(({ user, token }) => {
-        onRegister(user, token);
-        navigate('/')
-      })
-      .catch(err => {
-        navigate('/')
-      });
+    // 2) Llamada al servicio de registro
+    try {
+      const { user, token } = await authService.register(username, email, password);
+      // Si el backend devuelve "user" y "token" sin errores,
+      // guardamos la info y redirigimos
+      onRegister(user, token);
+      navigate('/');
+    } catch (err) {
+      // 3) Mostrar mensaje de error proveniente del backend
+      //    (por ej. "El nombre de usuario ya está en uso" o "El email ya está registrado")
+      let errorMsg = 'Error al registrar';  // default
+      // Si tu servicio usa fetch y lanza un Error con `err.message`,
+      // este valor puede ser el proveniente del backend
+      if (err.message) {
+        errorMsg = err.message;
+      }
+      setError(errorMsg);
+    }
   }
 
-  function onChangeUsername(event) {
-    setUsername(event.target.value);
-  }
-
-  function onChangeEmail(event) {
-    setEmail(event.target.value);
-  }
-
-  function onChangePassword(event) {
-    setPassword(event.target.value);
-  }
-
-  function onChangeConfirmPassword(event) {
-    setConfirmPassword(event.target.value);
-  }
+  // Handlers de input
+  function onChangeUsername(e) { setUsername(e.target.value); }
+  function onChangeEmail(e) { setEmail(e.target.value); }
+  function onChangePassword(e) { setPassword(e.target.value); }
+  function onChangeConfirmPassword(e) { setConfirmPassword(e.target.value); }
 
   // Alternar visibilidad de contraseña
   function togglePasswordVisibility() {
     setShowPassword(!showPassword);
   }
-
   function toggleConfirmPasswordVisibility() {
     setShowConfirmPassword(!showConfirmPassword);
   }
@@ -66,15 +66,19 @@ function RegisterPage({ onRegister }) {
   return (
     <main className='container-fluid d-flex align-items-center justify-content-center ColorBackground'>
       <div className="card shadow-lg p-4 my-5 fade-in" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className='text-center mb-4' style={{ fontWeight: 'bold', color: '#333' }}>Registrarse</h2>
+        <h2 className='text-center mb-4' style={{ fontWeight: 'bold', color: '#333' }}>
+          Registrarse
+        </h2>
 
-        {error && 
+        {/* Mostrar el error si existe */}
+        {error && (
           <div className="alert alert-danger text-center p-0" role="alert">
             <p className='p-2 m-0'>{error}</p>
           </div>
-        }
+        )}
 
         <form onSubmit={onSubmit}>
+          {/* Nombre de usuario */}
           <div className="mb-3">
             <label htmlFor="username" className="form-label">Nombre de usuario</label>
             <input 
@@ -87,6 +91,8 @@ function RegisterPage({ onRegister }) {
               style={{ borderRadius: '8px', borderColor: '#ddd' }}
             />
           </div>
+
+          {/* Email */}
           <div className="mb-3">
             <label htmlFor="email" className="form-label">Email</label>
             <input 
@@ -99,10 +105,12 @@ function RegisterPage({ onRegister }) {
               style={{ borderRadius: '8px', borderColor: '#ddd' }}
             />
           </div>
+
+          {/* Contraseña */}
           <div className="mb-3 position-relative">
             <label htmlFor="password" className="form-label">Contraseña</label>
             <input 
-              type={showPassword ? "text" : "password"} // Mostrar/ocultar contraseña
+              type={showPassword ? "text" : "password"} 
               className="form-control" 
               onChange={onChangePassword} 
               value={password} 
@@ -119,10 +127,12 @@ function RegisterPage({ onRegister }) {
               {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </button>
           </div>
+
+          {/* Confirmar Contraseña */}
           <div className="mb-3 position-relative">
             <label htmlFor="confirmPassword" className="form-label">Confirmar Contraseña</label>
             <input 
-              type={showConfirmPassword ? "text" : "password"} // Mostrar/ocultar confirmar contraseña
+              type={showConfirmPassword ? "text" : "password"} 
               className="form-control" 
               onChange={onChangeConfirmPassword} 
               value={confirmPassword} 
@@ -139,6 +149,8 @@ function RegisterPage({ onRegister }) {
               {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </button>
           </div>
+
+          {/* Botón de registro */}
           <button 
             className='btn colorButtons w-100 mt-3' 
             type="submit" 

@@ -1,0 +1,6 @@
+Imagenes - en web, que se muestren las 3, en mobiles, que quede carrousel,
+Carga de videos - Agregar un botón, que permita elegir si es contenido gratuito o no
+Perfil de usuario - Ver el tiempo de membresia, pagos, y todo, recuperación de contra,
+Cargar información de forma correcta, contenido que me pasen los chicos
+
+Agregar pasarela de pago, con terminos y condiciones y información que le sirva al cliente.

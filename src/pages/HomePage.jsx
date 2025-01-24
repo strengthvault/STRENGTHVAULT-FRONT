@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Tvideo from './../assets/videos/try.mp4';
-import TrainerImage from './../assets/trainers/trainer.png';
+
+
 import a from './../assets/designs/designBook.png';
 import { Book, Feed } from '@mui/icons-material'; // Importamos el ícono de Material UI
 import Slider from "react-slick";
@@ -12,6 +13,7 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 import Lautaro from './../assets/trainers/Lautaro-antonuttcio.jpg';
 import Nicolas from './../assets/trainers/Nicolas.jpg';
+import Martin from './../assets/trainers/trainer.jpg';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { IconButton } from '@mui/material';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
@@ -21,13 +23,19 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 const HomePage = () => {
 
+  const [largo, setLargo] = useState(window.innerWidth)
+
   const videoRef = React.useRef(null);
+
+  useEffect(() =>{
+
+  },[])
 
 
   const cards = [
     { image: Lautaro, text: "LAUTARO ANTONUTCCIO", description: "Entrenador de fuerza, powerlifting, Kineseologo, " },
     { image: Nicolas, text: "NICOLAS NIETO", description: "Entrenador de fuerza, Personal trainer" },
-    { image: TrainerImage, text: "MARTIN CASANOVA", description: "Entrenador de fuerza, Personal trainer" }
+    { image: Martin, text: "MARTIN CASANOVA", description: "Entrenador de fuerza, Personal trainer" }
     
   ];
 
@@ -90,28 +98,52 @@ const HomePage = () => {
 
 
 
-      <section className='row justify-content-center ColorBackground-2 '>
-      <div className='col-8 text-center'>
-        <Slider {...settings}>
-          {cards.map((card, index) => (
-            <div key={index} className="border-0 text-center my-5">
-              <div  className='card-img-top'>
-              <img src={card.image} className=" img-fluid imgCarrousel text-center m-auto" alt={`card-${index}`} />
+      <section className='row justify-content-center text-center ColorBackground-2 '>
+        {largo > 992 ? 
+        
+        <>
 
+        <div className='col-4'>
+          <h2>Lautaro Antonuttcio</h2>
+          <img src={Lautaro} className=" img-fluid imgCarrousel text-center m-auto" alt={`Lautaro Antonuttcio`} />
+        </div>
+        
+        <div className='col-4'>
+           <h2>Martin Casanova</h2>
+          <img src={Martin} className=" img-fluid imgCarrousel text-center m-auto" alt={`Martin Casanova`} />
+        </div>
+
+        <div className='col-4'>
+           <h2>Nicolas Nieto</h2>
+          <img src={Nicolas} className=" img-fluid imgCarrousel text-center m-auto" alt={`Nicolas Nieto`} />
+        </div>
+        
+        </> :
+        
+        <div className='col-8 text-center'>
+          <Slider {...settings}>
+            {cards.map((card, index) => (
+              <div key={index} className="border-0 text-center my-5">
+                <div  className='card-img-top'>
+                <img src={card.image} className=" img-fluid imgCarrousel text-center m-auto" alt={`card-${index}`} />
+
+                </div>
+                <div className="card-body text-center">
+                  <h5 className="card-title open-sans-titles">{card.text}</h5>
+                  <p className="card-text">{card.description}</p>
+                </div>
               </div>
-              <div className="card-body text-center">
-                <h5 className="card-title open-sans-titles">{card.text}</h5>
-                <p className="card-text">{card.description}</p>
-              </div>
-            </div>
-          ))}
-        </Slider>
-      </div>
+            ))}
+          </Slider>
+        </div>
+
+        }
+      
     </section>
 
 
 
-          <div className="row justify-content-center ColorBackground pb-5 text-shadow">
+          <div className="row justify-content-center ColorBackground pb-5 pt-5 text-shadow">
             <div className="col-10 col-lg-4 ">
               <div className="card ColorBackground text-light shadow-drop-2-center border-0 py-2 ">
                 <div className=" border-0 p-2">

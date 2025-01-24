@@ -363,7 +363,7 @@
 }
 
 .aaa{
-  max-width: 350px !important;
+  max-width: 70% !important;
 }
 
 .largoDesc{
@@ -417,8 +417,26 @@
   justify-content: space-between;
 }
 
+.colorDrive{
+  background-color: #188038;
+  color: #e2e2e2;
+}
 
+.altoName{
+  height: 48px;
+}
 
+.widthAccess{
+  width: 150px;
+}
+
+.widthJerarquy{
+  width: 150px;
+}
+
+.widthPrice{
+  width: 150px;
+}
 
 
 

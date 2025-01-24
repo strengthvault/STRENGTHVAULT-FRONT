@@ -24,6 +24,8 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import Administer from './pages/Administer.jsx';
 import AdministerVideos from './pages/AdministerVideos.jsx';
+import Perfil from './pages/Perfil.jsx';
+import PasarelCash from './pages/PasarelCash.jsx';
 
 // eslint-disable-next-line react/prop-types
 function RoutePrivate({ isAutenticate, children }) {
@@ -75,8 +77,10 @@ const App = () => {
     console.log(user);
     setIsAutenticated(true);
     localStorage.setItem('token', token);
+    localStorage.setItem('_id', user._id);
     if(user.role == 'admin'){
       localStorage.setItem('role', user.role);
+      localStorage.setItem('price', user.price);
     } else{
       console.log('asd')
     }
@@ -111,6 +115,12 @@ const App = () => {
               </Link>
             </li>
 
+            <li className="nav-item ">
+              <Link className={`nav-link mx-2 px-3 text-light colorNavLinks rounded-5 ${location.pathname == '/planes' && 'active'} `} to="/planes">
+                Planes
+              </Link>
+            </li>
+
             <li className="nav-item">
               {isAutenticated && isAdmin() && (
                 <>
@@ -136,6 +146,16 @@ const App = () => {
                 <>
                   <Link className={`nav-link mx-2 text-light colorNavLinks rounded-5 ${location.pathname == '/cursos' && 'active'} `} to={`/cursos`}>
                     Cursos
+                  </Link>
+                </>
+              )}
+            </li>
+
+            <li className="nav-item">
+              {isAutenticated && !isAdmin() && (
+                <>
+                  <Link className={`nav-link mx-2 text-light colorNavLinks rounded-5 ${location.pathname == '/perfil' && 'active'} `} to={`/perfil`}>
+                    Perfil
                   </Link>
                 </>
               )}
@@ -188,6 +208,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login onLogin={onLogin}  />} />
         <Route path="/register" element={<Login onLogin={onLogin} register={true} />} />
+        <Route path="/planes" element={<PasarelCash />} />
 
         <Route
           path="/cursos"
@@ -203,6 +224,15 @@ const App = () => {
           element={
             <RoutePrivate isAutenticate={isAutenticated}>
               <Administer />
+            </RoutePrivate>
+          }
+        />
+
+        <Route
+          path="/perfil"
+          element={
+            <RoutePrivate isAutenticate={isAutenticated}>
+              <Perfil />
             </RoutePrivate>
           }
         />
@@ -234,6 +264,12 @@ const App = () => {
           <li className="list-group-item bg-transparent  p-1">
             <Link className="py-2 nav-link text-light" to="/" onClick={() => setMenuSidebar(false)}>
               Inicio
+            </Link>
+          </li>
+
+          <li className="list-group-item bg-transparent  p-1">
+            <Link className="py-2 nav-link text-light" to="/planes/" onClick={() => setMenuSidebar(false)}>
+              Planes
             </Link>
           </li>
 

@@ -79,32 +79,29 @@ const createBlogWithVideo = async (formData) => {
 };
 
 // Crea una noticia
-async function createVideo(blog) {
-
+async function createVideo(blogData) {
     try {
-        const response = await fetch(`https://strengthvault-api.vercel.app/api/blogs/upload`, {
-            method: 'POST',
-            headers: {
-                'auth-token': localStorage.getItem('token'),
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(blog),
-        });
-
-        if (!response.ok) {
-            // Manejar el caso donde la respuesta no fue exitosa
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Error al crear la noticia');
-        }
-
-        const responseData = await response.json();
-        return responseData;
+      const response = await fetch('https://strengthvault-api.vercel.app/api/blogs/upload', {
+        method: 'POST',
+        headers: {
+          'auth-token': localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(blogData),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al crear la noticia');
+      }
+  
+      const responseData = await response.json();
+      return responseData;
     } catch (error) {
-        // Manejar errores de red, de parseo de JSON, o cualquier otro error aquí
-        console.error('Error en la solicitud:', error.message);
-        throw error;
+      console.error('Error en la solicitud:', error.message);
+      throw error;
     }
-}
+  }
 
 
 //Editar un día
