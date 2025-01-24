@@ -2,7 +2,7 @@ import axios from 'axios';
 
 async function getOEmbed(videoUrl) {
     try {
-        const response = await fetch(`http://localhost:3000/api/oembed`, {
+        const response = await fetch(`https://strengthvault-api.vercel.app/api/oembed`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
