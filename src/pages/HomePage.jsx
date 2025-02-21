@@ -33,9 +33,9 @@ const HomePage = () => {
 
 
   const cards = [
-    { image: Lautaro, text: "LAUTARO ANTONUTCCIO", description: "Entrenador de fuerza, powerlifting, Kineseologo, " },
-    { image: Nicolas, text: "NICOLAS NIETO", description: "Entrenador de fuerza, Personal trainer" },
-    { image: Martin, text: "MARTIN CASANOVA", description: "Entrenador de fuerza, Personal trainer" }
+    { image: Lautaro, text: "LAUTARO ANTONUTCCIO", description: "Soy Lautaro Antonuccio, uno de los creadores de Strength Vault y co-fundador de Strength Is Science. Actualmente soy estudiante de la Licenciatura de Kinesiología y Fisiatria, cuento con +5 años de experiencia como levantador de pesas. Me desarrollo dentro del coaching online con fines de mejora de rendimiento como en readaptación de lesiones." },
+    { image: Nicolas, text: "NICOLAS NIETO", description: "Mi nombre es Nicolas Nieto, soy uno de los creadores de Strength Vault, co-fundador y entrenador de Silverbackgym y actualmente estudiante de la Licenciatura en kinesiología y fisioterapia, me especializo en el entrenamiento de Powerlifting, fuerza e hipertrofia muscular." },
+    { image: Martin, text: "MARTIN CASANOVA", description: "Mi nombre es Martin Casanova, soy uno de los creadores de Strength Vault, co-fundador y entrenador de Strength is Science y actualmente estudiante de la Licenciatura en Nutricion, me especializo en el entrenamiento de Powerlifting, fuerza y acondicionamiento físico." }
     
   ];
 
@@ -69,30 +69,29 @@ const HomePage = () => {
       {/* Nueva sección con texto a la izquierda y el ícono a la derecha */}
       <section className="row justify-content-center ColorBackground align-items-center  align-center  py-5">
      
+         
+          <div className="col-10 col-lg-5 fade-in">
+            <h2 className='open-sans-titles text-center'>¿QUIENES SOMOS?</h2>
+            <p className='mt-4 '>
+            En Strength Vault te ofrecemos acceso exclusivo a contenido académico de entrenamiento de la más alta calidad. Aprenderás de especialistas en powerlifting, entrenamiento de la fuerza, y todas las aristas que lo rodean como pueden ser la nutrición, la fisioterapia, la psicología, la preparación física deportiva, entre otras más.
+
+Ofrecemos una amplia variedad de clases basadas en la evidencia científica y en la experiencia de campo. A su vez, te brindaremos el conocimiento y las herramientas necesarias para que puedas aplicarlos dentro de una programación del entrenamiento.
+
+<b className='d-block'>ACA SUBTITULO =========== </b>En Strength Vault, encontrarás contenido exclusivo y de la información más actualizada, clases disertadas por profesionales de diferentes áreas ya mencionadas, formando parte de una comunidad académica junto con su respectivo canal de preguntas y respuestas.
+
+Dichas clases se encontrarán divididas por un calendario mensual, conformando un total de al menos 4 videoclases de duración extensiva (1 de cada entrenador + 1 clase especial) por mes sumado al contenido gratuito.
+
+¿Qué estás esperando para ser parte de esta comunidad?
+
+
+            </p>
+          </div>
+
           <div className="col-10 col-lg-4 text-center fade-in" >
             <div className='altoImg m-auto text-center'>
               <img src={a} className='img-fluid m-auto ' alt="" />
             </div>
           </div>
-          <div className="col-10 col-lg-5 fade-in">
-            <h2 className='open-sans-titles text-center'>¿POR QUÉ ELEGIR STRENGTHVAULT?</h2>
-            <p className='mt-4 '>
-              <span className='d-block'>
-              <b>Contenido de calidad:</b> Accede a artículos científicos, reseñas de libros, entrevistas a expertos y mucho más. Nuestro equipo de editores selecciona cuidadosamente cada contenido para garantizar su relevancia y rigor.
-              </span>
-              <span className='d-block'>
-              <b>Actualizaciones constantes:</b> Mantente al día con las últimas tendencias y descubrimientos en el mundo del fitness. Publicamos nuevos artículos y entrevistas cada mes para que siempre tengas algo nuevo que aprender.
-              </span>
-              <span className='d-block'>
-              <b>Comunidad activa:</b> Únete a nuestra comunidad de apasionados del entrenamiento de fuerza. Intercambia conocimientos, comparte experiencias y encuentra inspiración en otros miembros.
-              </span>
-              <span className='d-block'>
-              <b>Diversidad de temas:</b> Desde las últimas técnicas de entrenamiento hasta la nutrición deportiva y la psicología del ejercicio, en StrengthVault encontrarás todo lo que necesitas para mejorar tu rendimiento.
-              </span>
-            </p>
-          </div>
-
-       
       </section>
 
 
@@ -106,16 +105,19 @@ const HomePage = () => {
         <div className='col-4'>
           <h2>Lautaro Antonuttcio</h2>
           <img src={Lautaro} className=" img-fluid imgCarrousel text-center m-auto" alt={`Lautaro Antonuttcio`} />
+          <p className='mx-5 mt-4'>Soy Lautaro Antonuccio, uno de los creadores de Strength Vault y co-fundador de Strength Is Science. Actualmente soy estudiante de la Licenciatura de Kinesiología y Fisiatria, cuento con +5 años de experiencia como levantador de pesas. Me desarrollo dentro del coaching online con fines de mejora de rendimiento como en readaptación de lesiones.</p>
         </div>
         
         <div className='col-4'>
            <h2>Martin Casanova</h2>
           <img src={Martin} className=" img-fluid imgCarrousel text-center m-auto" alt={`Martin Casanova`} />
+          <p className='mx-5 mt-4'>Mi nombre es Martin Casanova, soy uno de los creadores de Strength Vault, co-fundador y entrenador de Strength is Science y actualmente estudiante de la Licenciatura en Nutricion, me especializo en el entrenamiento de Powerlifting, fuerza y acondicionamiento físico.</p>
         </div>
 
         <div className='col-4'>
            <h2>Nicolas Nieto</h2>
           <img src={Nicolas} className=" img-fluid imgCarrousel text-center m-auto" alt={`Nicolas Nieto`} />
+          <p className='mx-5 mt-4'>Mi nombre es Nicolas Nieto, soy uno de los creadores de Strength Vault, co-fundador y entrenador de Silverbackgym y actualmente estudiante de la Licenciatura en kinesiología y fisioterapia, me especializo en el entrenamiento de Powerlifting, fuerza e hipertrofia muscular.</p>
         </div>
         
         </> :
@@ -129,8 +131,8 @@ const HomePage = () => {
 
                 </div>
                 <div className="card-body text-center">
-                  <h5 className="card-title open-sans-titles">{card.text}</h5>
-                  <p className="card-text">{card.description}</p>
+                  <h5 className="card-title open-sans-titles mt-5">{card.text}</h5>
+                  <p className="card-text mt-3 mx-3">{card.description}</p>
                 </div>
               </div>
             ))}
@@ -143,14 +145,16 @@ const HomePage = () => {
 
 
 
-          <div className="row justify-content-center ColorBackground pb-5 pt-5 text-shadow">
+          <div className="row justify-content-center ColorBackground pb-5 pt-3 text-shadow">
             <div className="col-10 col-lg-4 ">
               <div className="card ColorBackground text-light shadow-drop-2-center border-0 py-2 ">
                 <div className=" border-0 p-2">
-                  <h3 className="my-0 open-sans-titles text-center ">PLAN STRENGTHVAULT</h3>
+                  <h3 className="my-0 open-sans-titles text-center ">PLAN STRENGTH VAULT</h3>
                 </div>
                 <div className="row justify-content-center">
-                  <p className="card-title open-sans-titles fs-5 mt-4  text-center">$20000 <span className="">/ mes</span></p>
+                  <p className="card-title open-sans-titles fs-5 mt-4  text-center">$12000 <span className="">/ mes</span></p>
+                  <p className="card-title open-sans-titles fs-5 mt-4  text-center">$30000 <span className="">/ 3 meses</span></p>
+                  <p className="card-title open-sans-titles fs-5 mt-4  text-center">$96000 <span className="">/ 12 meses</span></p>
                   <div className='col-8  text-center'>
 
                   <ul className="list-group list-group-flush text-center ">

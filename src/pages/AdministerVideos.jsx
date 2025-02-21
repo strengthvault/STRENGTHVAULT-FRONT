@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import videosServices from '../services/videos.services';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { MultiSelect } from 'primereact/multiselect';
 import { Dropdown } from 'primereact/dropdown';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { Dialog } from 'primereact/dialog';
@@ -13,42 +14,29 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import ReactPlayer from 'react-player';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddToDriveIcon from '@mui/icons-material/AddToDrive';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 
 const AdministerVideos = () => {
+    // Estados para el formulario de creación
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
-    const [categoria, setCategoria] = useState('');
-    const [category, setCategory] = useState(null);
-    const [url, setUrl] = useState('');
-
-    // Nuevo estado para jerarquía en el formulario de creación
-    const [jerarquia, setJerarquia] = useState('');
-
-    // Para forzar recarga de datos
+    // Ambos campos ahora se manejan como arrays
+    const [category, setCategory] = useState([]);
+    const [jerarquia, setJerarquia] = useState([]);
     const [status, setStatus] = useState(true);
-
     const [selectedVideo, setSelectedVideo] = useState('');
     const [videosData, setVideosData] = useState([]);
-
-    // Para edición en diálogo
     const [editingVideo, setEditingVideo] = useState(null);
     const [openEditDialog, setOpenEditDialog] = useState(false);
-
-    // Confirmación de borrado
     const [confirmDelete, setConfirmDelete] = useState(null);
-
-    // Para OverlayPanel (mostrar video al hacer click)
     const op = useRef(null);
-
-    // Para detectar si está en mobile
     const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
 
-    // Listas de opciones
-    const categories = [
+    // Opciones para categorías y jerarquía
+    const categoriesOptions = [
+        { name: 'Gratuito' },
         { name: 'Powerlifting' },
         { name: 'Salud' },
         { name: 'Rendimiento' },
@@ -57,11 +45,10 @@ const AdministerVideos = () => {
         { name: 'Entrenamiento en niños' }
     ];
 
-    // Opciones de jerarquía
     const jerarquiaOptions = [
         { label: 'Gratuito', value: 'gratuito' },
-        { label: 'Básico', value: 'basico' },
-        { label: 'Elite',  value: 'elite' }
+        { label: 'Basico', value: 'basico' },
+        { label: 'Elite', value: 'elite' }
     ];
 
     useEffect(() => {
@@ -80,7 +67,7 @@ const AdministerVideos = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, [status]);
 
-    // Maneja los inputs del formulario de creación
+    // Para el formulario de creación, usamos MultiSelect para ambas selecciones
     const handleFormChange = (field, value) => {
         switch (field) {
             case 'nombre':
@@ -90,39 +77,37 @@ const AdministerVideos = () => {
                 setDescripcion(value);
                 break;
             case 'categoria':
-                setCategory(typeof value === 'string' ? value : value.name);
+                // value viene como array desde el MultiSelect
+                setCategory(Array.isArray(value) ? value : []);
                 break;
             default:
                 break;
         }
     };
 
-    // Validación básica
     const validateForm = () => {
-        if (!nombre || !descripcion || !category || !jerarquia) {
+        if (!nombre || !descripcion || !category.length || !jerarquia.length) {
             toast.error('Todos los campos (nombre, descripción, categoría, jerarquía) son obligatorios');
             return false;
         }
         return true;
     };
 
-    // Crear un nuevo blog con video
     const onSubmit = (e) => {
         e.preventDefault();
         if (!validateForm()) return;
-
         const toastId = toast.loading('Creando...');
-
-        // Armamos un objeto normal (JSON) con los campos
         const blogData = {
             nombre,
             descripcion,
+            // Se envía el array de categorías y de jerarquías
             categoria: category,
-            jerarquia
+            jerarquia: jerarquia
         };
-
         videosServices.createVideo(blogData)
             .then(() => {
+                // Se invierte el estado para forzar la recarga de los videos,
+                // pero no se usa para renderizar el listado.
                 setStatus(!status);
                 toast.update(toastId, {
                     render: '¡Blog creado con éxito!',
@@ -132,8 +117,8 @@ const AdministerVideos = () => {
                 });
                 setNombre('');
                 setDescripcion('');
-                setCategory(null);
-                setJerarquia('');
+                setCategory([]);
+                setJerarquia([]);
             })
             .catch(() => {
                 toast.update(toastId, {
@@ -145,27 +130,32 @@ const AdministerVideos = () => {
             });
     };
 
-    // Abre el diálogo de edición con los datos del video seleccionado
     const startEditing = (video) => {
-        // Clonamos el objeto para no mutar directamente
-        setEditingVideo({ ...video });
+        // Aseguramos que ambas propiedades sean arrays
+        const videoCategories = Array.isArray(video.categoria)
+            ? video.categoria
+            : video.categoria
+            ? [video.categoria]
+            : [];
+        const videoJerarquias = Array.isArray(video.jerarquia)
+            ? video.jerarquia
+            : video.jerarquia
+            ? [video.jerarquia]
+            : [];
+        setEditingVideo({ ...video, categoria: videoCategories, jerarquia: videoJerarquias });
         setOpenEditDialog(true);
     };
 
-    // Cierra el diálogo de edición
     const cancelEditing = () => {
         setEditingVideo(null);
         setOpenEditDialog(false);
     };
 
-    // Guarda los cambios (edición) en la base
     const saveChanges = async () => {
         if (!editingVideo) return;
         const toastId = toast.loading('Editando...');
-
         try {
             await videosServices.editVideo(editingVideo._id, editingVideo);
-            // Actualizamos la lista local
             setVideosData((prevData) =>
                 prevData.map((b) => (b._id === editingVideo._id ? editingVideo : b))
             );
@@ -187,15 +177,16 @@ const AdministerVideos = () => {
         }
     };
 
-    // Función que actualiza el estado local del video en edición
     const updateEditingField = (field, value) => {
         setEditingVideo((prev) => ({
             ...prev,
-            [field]: value
+            // Para los campos de selección múltiple forzamos que sean arrays
+            [field]: (field === 'categoria' || field === 'jerarquia')
+              ? (Array.isArray(value) ? value : [])
+              : value
         }));
     };
 
-    // Diálogo de confirmación de borrado
     const handleDelete = async (video) => {
         const toastId = toast.loading('Eliminando...');
         try {
@@ -218,40 +209,29 @@ const AdministerVideos = () => {
         }
     };
 
-    // Renderizado de íconos de acción para cada video
+    // Rediseño de las acciones con contenedor flex
     const renderActions = (blog) => (
-        <div className="row justify-content-center text-center">
-            {/* Editar */}
-            <div className='col-6'>
-                <IconButton className='border aaa' onClick={() => startEditing(blog)}>
-                    <EditIcon className='text-light' />
-                </IconButton>
-            </div>
-            {/* Eliminar */}
-            <div className='col-6'>
-                <IconButton
-                    className='border aaa'
-                    onClick={() => setConfirmDelete(blog)}
-                >
-                    <DeleteIcon className='text-light' />
-                </IconButton>
-            </div>
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
+            <IconButton className='text-light' onClick={() => startEditing(blog)} style={{ padding: '8px' }}>
+                <EditIcon style={{ fontSize: '1.6rem' }} />
+            </IconButton>
+            <IconButton className='text-light' onClick={() => setConfirmDelete(blog)} style={{ padding: '8px' }}>
+                <DeleteIcon style={{ fontSize: '1.6rem' }} />
+            </IconButton>
         </div>
     );
 
-    // Ícono para reproducir el video en un OverlayPanel
     const renderVideoIcon = (blog) => (
         <>
             <IconButton
-                className='border'
                 onClick={(e) => {
                     setSelectedVideo(blog.url);
                     op.current.toggle(e);
                 }}
             >
-                <YouTubeIcon className='text-light' />
+                <YouTubeIcon className='text-light' style={{ fontSize: '1.6rem' }} />
             </IconButton>
-            <OverlayPanel ref={op} >
+            <OverlayPanel ref={op}>
                 <ReactPlayer
                     url={selectedVideo}
                     className="m-auto"
@@ -275,7 +255,6 @@ const AdministerVideos = () => {
         </>
     );
 
-    // Tabla para pantallas grandes
     const renderTable = () => (
         <div className='row justify-content-center'>
             <div className='col-11'>
@@ -297,8 +276,21 @@ const AdministerVideos = () => {
                                 <td>
                                     <span className='cssformated'>{blog.descripcion}</span>
                                 </td>
-                                <td>{blog.categoria}</td>
-                                <td>{blog.jerarquia}</td>
+                                <td>
+                                    {Array.isArray(blog.categoria)
+                                      ? blog.categoria.map((cat, idx) => (
+                                          <span key={idx}>
+                                            {typeof cat === 'object' ? cat.name : cat}
+                                            {idx < blog.categoria.length - 1 ? ', ' : ''}
+                                          </span>
+                                        ))
+                                      : blog.categoria}
+                                </td>
+                                <td>
+                                    {Array.isArray(blog.jerarquia)
+                                      ? blog.jerarquia.join(', ')
+                                      : blog.jerarquia}
+                                </td>
                                 <td>{renderVideoIcon(blog)}</td>
                                 <td>{renderActions(blog)}</td>
                             </tr>
@@ -309,7 +301,6 @@ const AdministerVideos = () => {
         </div>
     );
 
-    // Cards para pantallas móviles
     const renderCards = () => (
         <div className="row">
             {videosData.map((blog) => (
@@ -325,12 +316,21 @@ const AdministerVideos = () => {
                                 {blog.descripcion}
                             </p>
                             <div className="mb-4 text-center">
-                                <strong className='d-block mb-4 '>Categoría </strong>
-                                {blog.categoria}
+                                <strong className='d-block mb-4'>Categoría </strong>
+                                {Array.isArray(blog.categoria)
+                                  ? blog.categoria.map((cat, idx) => (
+                                      <span key={idx}>
+                                        {typeof cat === 'object' ? cat.name : cat}
+                                        {idx < blog.categoria.length - 1 ? ', ' : ''}
+                                      </span>
+                                    ))
+                                  : blog.categoria}
                             </div>
                             <div className="mb-4 text-center">
-                                <strong className='d-block mb-4 '>Jerarquía </strong>
-                                {blog.jerarquia}
+                                <strong className='d-block mb-4'>Jerarquía </strong>
+                                {Array.isArray(blog.jerarquia)
+                                  ? blog.jerarquia.join(', ')
+                                  : blog.jerarquia}
                             </div>
                             <div className="mb-2 text-center">
                                 {renderVideoIcon(blog)}
@@ -346,7 +346,7 @@ const AdministerVideos = () => {
     return (
         <div className="container-fluid">
             {/* FORMULARIO CREAR VIDEO */}
-            <div className='row justify-content-center '>
+            <div className='row justify-content-center'>
                 <div className='ColorBackground'>
                     <h2 className='my-4 text-center text-light'>Agregá un blog con video</h2>
                     <div className='row justify-content-center text-center'>
@@ -363,18 +363,16 @@ const AdministerVideos = () => {
                                         placeholder="Nombre del blog"
                                     />
                                 </div>
-                                <div className='col-12 col-lg-5 '>
+                                <div className='col-12 col-lg-5'>
                                     <label htmlFor='categoria' className='text-light text-center d-block mb-1'>
                                         Categoría
                                     </label>
-                                    <Dropdown 
-                                        editable 
-                                        value={category || ''} 
-                                        options={categories} 
+                                    <MultiSelect 
+                                        value={category} 
+                                        options={categoriesOptions} 
                                         optionLabel="name"
                                         onChange={(e) => handleFormChange('categoria', e.value)}
-                                        className='border-0'
-                                        placeholder="Escribe o selecciona una categoría"
+                                        placeholder="Selecciona una o más categorías"
                                     />
                                 </div>
                             </div>
@@ -384,11 +382,12 @@ const AdministerVideos = () => {
                                     <label htmlFor='jerarquia' className='text-light text-center d-block mb-1'>
                                         Jerarquía
                                     </label>
-                                    <Dropdown
+                                    <MultiSelect
                                         value={jerarquia}
                                         options={jerarquiaOptions}
-                                        onChange={(e) => setJerarquia(e.value)}
-                                        placeholder="Selecciona la jerarquía"
+                                        optionLabel="label"
+                                        onChange={(e) => setJerarquia(Array.isArray(e.value) ? e.value : [])}
+                                        placeholder="Selecciona una o más jerarquías"
                                         className='w-100'
                                     />
                                 </div>
@@ -417,7 +416,6 @@ const AdministerVideos = () => {
                                     Cargar video al drive
                                 </Link>
                             </div>
-                            {/* Ya no se usa file; no hay formData */}
                             <button type="submit" className="btn btn-primary mt-4">
                                 Crear Blog
                             </button>
@@ -427,12 +425,12 @@ const AdministerVideos = () => {
 
                 {/* LISTADO DE VIDEOS */}
                 <div className='ColorBackground-2'>
-                    <h2 className=" text-center text-light mt-4">Administrar Videos</h2>
-                    {isMobile && status ? renderCards() : status && renderTable()}
+                    <h2 className="text-center text-light mt-4">Administrar Videos</h2>
+                    {isMobile ? renderCards() : renderTable()}
                 </div>
             </div>
 
-            {/* DIALOGO DE EDICIÓN */}
+            {/* DIÁLOGO DE EDICIÓN */}
             <Dialog
                 visible={openEditDialog}
                 onHide={cancelEditing}
@@ -459,25 +457,34 @@ const AdministerVideos = () => {
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Categoría</label>
-                            <Dropdown
-                                editable
-                                value={editingVideo.categoria || ''}
-                                options={categories}
+                            <MultiSelect
+                                value={
+                                  Array.isArray(editingVideo.categoria)
+                                  ? editingVideo.categoria
+                                  : editingVideo.categoria
+                                  ? [editingVideo.categoria]
+                                  : []
+                                }
+                                options={categoriesOptions}
                                 optionLabel="name"
-                                onChange={(e) => {
-                                    const newValue = (typeof e.value === 'string') ? e.value : e.value.name;
-                                    updateEditingField('categoria', newValue);
-                                }}
-                                placeholder="Escribe o selecciona una categoría"
+                                onChange={(e) => updateEditingField('categoria', e.value)}
+                                placeholder="Selecciona una o más categorías"
                             />
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Jerarquía</label>
-                            <Dropdown
-                                value={editingVideo.jerarquia || ''}
+                            <MultiSelect
+                                value={
+                                  Array.isArray(editingVideo.jerarquia)
+                                  ? editingVideo.jerarquia
+                                  : editingVideo.jerarquia
+                                  ? [editingVideo.jerarquia]
+                                  : []
+                                }
                                 options={jerarquiaOptions}
+                                optionLabel="label"
                                 onChange={(e) => updateEditingField('jerarquia', e.value)}
-                                placeholder="Selecciona la jerarquía"
+                                placeholder="Selecciona una o más jerarquías"
                             />
                         </div>
                     </div>
@@ -500,7 +507,7 @@ const AdministerVideos = () => {
                 </div>
             </Dialog>
 
-            {/* DIALOGO DE CONFIRMACIÓN DE BORRADO */}
+            {/* DIÁLOGO DE CONFIRMACIÓN DE BORRADO */}
             <Dialog
                 visible={!!confirmDelete}
                 onHide={() => setConfirmDelete(null)}
@@ -532,7 +539,6 @@ const AdministerVideos = () => {
                     </div>
                 )}
             </Dialog>
-
             <ToastContainer position="bottom-center" autoClose={2000} />
         </div>
     );

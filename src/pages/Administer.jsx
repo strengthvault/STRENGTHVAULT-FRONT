@@ -23,6 +23,9 @@ const Administer = () => {
     const [openDeleteReceiptDialog, setOpenDeleteReceiptDialog] = useState(false);
     const [receiptToDelete, setReceiptToDelete] = useState(null);
 
+    // Nuevo: Diálogo de confirmación para agregar recibo
+    const [openConfirmReceiptDialog, setOpenConfirmReceiptDialog] = useState(false);
+
     // Opciones de categoría (jerarquía)
     const categories = ['Gratuito', 'Básico', 'Elite'];
 
@@ -142,6 +145,20 @@ const Administer = () => {
 
         // 3) Guardamos inmediatamente con el updatedUser
         handleSaveChanges(updatedUser);
+    };
+
+    // Nuevo: Funciones para abrir/cerrar el diálogo de confirmación para agregar recibo
+    const handleOpenConfirmReceiptDialog = () => {
+        setOpenConfirmReceiptDialog(true);
+    };
+
+    const handleCloseConfirmReceiptDialog = () => {
+        setOpenConfirmReceiptDialog(false);
+    };
+
+    const handleConfirmReceipt = () => {
+        setOpenConfirmReceiptDialog(false);
+        handleAddAndSaveReceipt();
     };
 
     // ----------------------------------
@@ -387,6 +404,24 @@ const Administer = () => {
                 </DialogActions>
             </Dialog>
 
+            {/* Nuevo: Diálogo Confirmación para Agregar Recibo */}
+            <Dialog open={openConfirmReceiptDialog} onClose={handleCloseConfirmReceiptDialog}>
+                <DialogTitle>Confirmar acción</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        ¿Estás seguro de que deseas habilitar acceso y generar recibo?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirmReceiptDialog} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleConfirmReceipt} color="primary">
+                        Confirmar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             {/* Diálogo Edición Membresía + Historial de Pagos */}
             {userToEdit && (
                 <Dialog
@@ -403,13 +438,13 @@ const Administer = () => {
                                 <tr>
                                     <th className='widthName'>Usuario</th>
                                     <th className='widthAccess'>Permitir Acceso</th>
-                                    <th >Jerarquía</th>
+                                    <th>Jerarquía</th>
                                     <th className='widthPrice'>Precio</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td  className='text-dark'>{userToEdit.username}</td>
+                                    <td className='text-dark'>{userToEdit.username}</td>
                                     <td className="text-center">
                                         <input
                                             className="form-check-input"
@@ -425,7 +460,7 @@ const Administer = () => {
                                     </td>
                                     <td className='widthJerarquy'>
                                         <select
-                                            className="form-select border-0 "
+                                            className="form-select border-0"
                                             value={userToEdit.category || 'Gratuito'}
                                             onChange={(e) =>
                                                 setUserToEdit(prev => ({ ...prev, category: e.target.value }))
@@ -439,7 +474,7 @@ const Administer = () => {
                                     <td>
                                         <input
                                             type="number"
-                                            className="form-control  border-0"
+                                            className="form-control border-0"
                                             placeholder="Ingresa el precio"
                                             value={userToEdit.price || ''}
                                             onChange={handlePriceChange}
@@ -470,14 +505,13 @@ const Administer = () => {
                             </div>
                         </div>
 
-
                         {/* Botón para AGREGAR y GUARDAR un nuevo recibo directamente */}
-                        <div className="mb-2 text-center ">
+                        <div className="mb-2 text-center">
                             <button 
                                 className="btn btn-success btn-sm"
-                                onClick={handleAddAndSaveReceipt}
+                                onClick={handleOpenConfirmReceiptDialog}
                             >
-                               Habilitar acceso y generar recibo
+                                Habilitar acceso y generar recibo
                             </button>
                         </div>
 

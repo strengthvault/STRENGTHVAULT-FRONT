@@ -46,8 +46,9 @@ async function getVideos() {
 
 
 //Busca una noticia por su ID
-async function findByVideoId(id) {
-    return fetch(`https://strengthvault-api.vercel.app/api/blogs/${id}`, {
+async function findByVideoId(userId, videoId) {
+    console.log(userId, videoId)
+    return fetch(`https://strengthvault-api.vercel.app/api/blogs/${userId}/${videoId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

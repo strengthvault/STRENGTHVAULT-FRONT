@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, Navigate, useLocation } from 'react-router-dom'; // Asegúrate de importar useLocation
 import { Sidebar } from 'primereact/sidebar';
 import * as authService from './services/auth.services.js';
-
+import { Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 
 
 import Dashboard from './pages/Dashboard';
@@ -100,8 +100,8 @@ const App = () => {
   return (
     <div className="container-fluid m-0 p-0">
       <nav className={`navbar navbar-expand-lg navbar-dark colorNavBar w-100 p-4`}>
-        <a className="navbar-brand open-sans-titles ms-3" href="/">
-          STRENGTHVAULT
+        <a className="navbar-brand open-sans-titles text-light ms-3" href="/">
+          STRENGTH VAULT
         </a>
         <button className="navbar-toggler" type="button" onClick={handleMenuSidebarOpen}>
           <span className="navbar-toggler-icon"></span>
@@ -194,15 +194,15 @@ const App = () => {
         </div>
       </nav>
 
-      <div className="video-container">
-        <ReactPlayer url={TVideo} playing loop muted width="100%" height="60vh" className="hero-video" />
-        <div className="video-overlay video-overlay-down"></div>
+      <div className="ColorBackground-2 text-center pt-5">
+
+
+        <img src={StrengthLogo} alt="Academy Logo" className="logo img-fluid mb-5 mt-5 pt-3" />
+        <h1 className="text-light open-sans-titles">STRENGTH VAULT</h1>
+        <p className="fade-in m-0 pb-5 text-light">Tu Fortaleza en el Mundo de la Fuerza</p>
       </div>
-      <div className="overlay-content">
-        <img src={StrengthLogo} alt="Academy Logo" className="logo img-fluid mb-2" />
-        <h1 className="c open-sans-titles">STRENGTHVAULT</h1>
-        <p className="fade-in mt-3">Tu Fortaleza en el Mundo de la Fuerza</p>
-      </div>
+
+
 
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -248,7 +248,7 @@ const App = () => {
         />
 
         <Route
-          path="/video/:id"
+          path="/video/:userId/:videoId"
           element={
             <RoutePrivate isAutenticate={isAutenticated}>
               <VideoMobile />
@@ -339,7 +339,7 @@ const App = () => {
             <div className="col-md-4 mb-4">
               <h5>Sobre Nosotros</h5>
               <p>
-                StrengthVault es más que un sitio web; es tu compañero en el apasionante mundo del entrenamiento de
+                Strength Vault es más que un sitio web; es tu compañero en el apasionante mundo del entrenamiento de
                 fuerza. Somos tu fuente de información más confiable, actualizada y completa, diseñada para ayudarte a
                 alcanzar tus objetivos y a profundizar tus conocimientos en este campo.
               </p>
@@ -375,7 +375,7 @@ const App = () => {
                       {' '}
                       <LocationOnIcon />{' '}
                     </IconButton>{' '}
-                    Zona sur - Buenos aires - Argentina
+                    Argentina
                   </li>
                 </ul>
 
@@ -408,9 +408,20 @@ const App = () => {
           </div>
         </div>
         <div className="text-center py-2">
-          <p className="mb-0 text-ligth">&copy; 2024 Todos los derechos reservados - STRENGTHVAULT</p>
+          <p className="mb-0 text-ligth">&copy; 2025 Todos los derechos reservados - STRENGTHVAULT</p>
         </div>
       </footer>
+
+      {/* Botón flotante para WhatsApp (izquierda) */}
+      <Fab
+        color="primary"
+        aria-label="whatsapp"
+
+        style={{ position: 'fixed', bottom: 20, right: 20,  zIndex: 1000 }}
+      >
+        <WhatsAppIcon />
+      </Fab>
+
     </div>
   );
 };

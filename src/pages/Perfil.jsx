@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as UserServices from './../services/auth.services.js';
+import LoadingScreen from '../components/LoadingScreen.jsx';
 
 const Perfil = () => {
   const [userData, setUserData] = useState(null);
@@ -14,14 +15,8 @@ const Perfil = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  if (!userData) {
-    // Mientras carga o si no hay datos, muestra un loader o mensaje
-    return (
-      <div className="text-center text-white mt-5">
-        <p>Cargando tu perfil...</p>
-      </div>
-    );
-  }
+
+  if (!userData) return <LoadingScreen />;
 
   return (
     <main className="container-fluid text-white" >
