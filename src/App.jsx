@@ -9,8 +9,6 @@ import Dashboard from './pages/Dashboard';
 
 import HomePage from './pages/HomePage.jsx';
 import Login from './pages/Login.jsx';
-import ReactPlayer from 'react-player';
-import TVideo from './assets/videos/try.mp4';
 import StrengthLogo from './assets/logos/strength.png';
 import VideoMobile from './pages/VideoMobile.jsx';
 
