@@ -71,27 +71,25 @@ const HomePage = () => {
      
          
           <div className="col-10 col-lg-5 fade-in">
-            <h2 className='open-sans-titles text-center'>¿QUIENES SOMOS?</h2>
+            <h2 className='open-sans-titles text-start'>¿QUIENES SOMOS?</h2>
             <p className='mt-4 '>
-            En Strength Vault te ofrecemos acceso exclusivo a contenido académico de entrenamiento de la más alta calidad. Aprenderás de especialistas en powerlifting, entrenamiento de la fuerza, y todas las aristas que lo rodean como pueden ser la nutrición, la fisioterapia, la psicología, la preparación física deportiva, entre otras más.
+            En <b>Strength Vault</b> te ofrecemos acceso exclusivo a contenido académico de entrenamiento de la más alta calidad. Aprenderás de especialistas en <b>powerlifting</b>, <b>entrenamiento de la fuerza</b>, y todas las aristas que lo rodean como pueden ser la <b>nutrición</b>, la <b>fisioterapia</b>, la <b>psicología</b>, la <b>preparación física deportiva</b>, entre otras más. Ofrecemos una amplia variedad de clases basadas en la <b>evidencia científica</b> y en la <b>experiencia de campo</b>. A su vez, te brindaremos el conocimiento y las herramientas necesarias para que puedas aplicarlos dentro de una <b>programación del entrenamiento</b>.
 
-Ofrecemos una amplia variedad de clases basadas en la evidencia científica y en la experiencia de campo. A su vez, te brindaremos el conocimiento y las herramientas necesarias para que puedas aplicarlos dentro de una programación del entrenamiento.
+<h3 className='d-block mt-4 mb-3 fs-5'>¿Como es nuestra modalidad de trabajo?</h3>En <b>Strength Vault</b>, encontrarás contenido exclusivo y de la información más actualizada, clases disertadas por profesionales de diferentes áreas ya mencionadas, formando parte de una comunidad académica junto con su respectivo canal de preguntas y respuestas.
 
-<b className='d-block'>ACA SUBTITULO =========== </b>En Strength Vault, encontrarás contenido exclusivo y de la información más actualizada, clases disertadas por profesionales de diferentes áreas ya mencionadas, formando parte de una comunidad académica junto con su respectivo canal de preguntas y respuestas.
-
-Dichas clases se encontrarán divididas por un calendario mensual, conformando un total de al menos 4 videoclases de duración extensiva (1 de cada entrenador + 1 clase especial) por mes sumado al contenido gratuito.
-
-¿Qué estás esperando para ser parte de esta comunidad?
-
+<p>Dichas clases se encontrarán divididas por un calendario mensual, conformando un total de al menos 4 videoclases de duración extensiva (1 de cada entrenador + 1 clase especial) por mes sumado al contenido gratuito.</p>
 
             </p>
+
+            <b className='text-center mt-3'>¿Qué estás esperando para ser parte de esta comunidad?</b>
           </div>
 
+          {largo > 992 &&
           <div className="col-10 col-lg-4 text-center fade-in" >
             <div className='altoImg m-auto text-center'>
               <img src={a} className='img-fluid m-auto ' alt="" />
             </div>
-          </div>
+          </div>}
       </section>
 
 
