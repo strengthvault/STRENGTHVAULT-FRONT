@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
-import Tvideo from './../assets/videos/try.mp4';
-
 
 import a from './../assets/designs/designBook.png';
 import { Book, Feed } from '@mui/icons-material'; // Importamos el ícono de Material UI
